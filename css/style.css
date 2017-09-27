@@ -66,10 +66,15 @@ legend {
 
 input[type="text"],
 input[type="email"],
-legend {
+legend,
+textarea {
 	width: 100%;
 }
-
+textarea{
+  font-size: 16px;
+  resize:none;
+  height: 49px;
+}
 label {
 	color: #000;
 	display: block;
@@ -81,7 +86,8 @@ select {
 	margin-bottom: 1.125em;
 }
 
-input {
+input,
+textarea {
 	font-size: 1em;
 	font-weight: 500;
 	padding: .8em;
