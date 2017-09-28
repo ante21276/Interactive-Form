@@ -11,14 +11,6 @@ let jobs_selection = document.querySelector("#title");
 let other_textarea = document.querySelector("#other-title"); //Add other-title id to textarea
 other_textarea.placeholder = "Your Job Role";
 other_textarea.style.display = "none";
-
-function jobFunc () {
-  if(jobs_selection.value === "other") {
-    other_textarea.style.display = "block";
-  } else {
-    other_textarea.style.display = "none";
-  }
-}
 /**********************************
 Change color menu
 ***********************************/
@@ -142,51 +134,140 @@ let regex_mail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/; //Using regular exp
 let regex_cc = /\d{12,15}/; //Using regular expresion for cc number validation
 let regex_zip = /\d{5}/;
 let regex_cvv = /\d{3}/;
-var newNode = document.createElement("span");
-var parentDiv = document.querySelector("#cc-num").parentNode;
+let new_cc_span = document.createElement("span");
+let new_zip_span = document.createElement("span");
+let new_cvv_span = document.createElement("span");
+let new_mail_span = document.createElement("span");
+let cc_input = document.querySelector("#cc-num").parentNode;
+let zip_input = document.querySelector("#zip").parentNode;
+let zip = document.querySelector("#zip");
 let cc_num = document.querySelector("#cc-num");
-
+let cvv = document.querySelector("#cvv");
+let cvv_input = document.querySelector("#cvv").parentNode;
+let mail = document.querySelector("#mail");
 submit.addEventListener("click", function(e) {  //start listener
-  let cvv = document.querySelector("#cvv");
-  let zip = document.querySelector("#zip");
-  let mail = document.querySelector("#mail").value;
-  if (name_input.value.length === 0 || regex_mail.test(mail) === false || regex_cc.test(cc_num.value) === false
-      || regex_zip.test(zip.value) === false || regex_cvv.test(cvv.value) === false) { // Check for name, mail, cc number, zip code and cvv
+  if (name_input.value.length === 0) {
     e.preventDefault();
-    fieldsets[0].children[1].style.color = "red";
-    name_input.style.borderColor = "red";
-    fieldsets[0].children[3].style.color = "red";
-    fieldsets[0].children[4].style.borderColor = "red";
-    fieldsets[2].children[0].style.color = "red";
-    fieldsets[3].children[3].children[0].children[0].style.color = "red";
-    fieldsets[3].children[3].children[0].children[1].style.borderColor = "red";
-    fieldsets[3].children[3].children[1].children[0].style.color = "red";
-    fieldsets[3].children[3].children[1].children[1].style.borderColor = "red";
-    fieldsets[3].children[3].children[2].children[0].style.color = "red";  //CVV label color
-    fieldsets[3].children[3].children[2].children[1].style.borderColor = "red"; //CVV input border color
+    name_input.style.borderColor = "#cc0000";
+    fieldsets[0].children[1].style.color = "#cc0000";
+    alert("You need enter your name!")
+  }
+  if (regex_mail.test(mail.value) === false) {
+    e.preventDefault();
+    fieldsets[0].children[3].style.color = "#cc0000";
+    fieldsets[0].children[4].style.borderColor = "#cc0000";
+    alert("You need enter email!");
   }
   if(sum1 === false && sum2 === false && sum3 === false && sum4 === false && sum5 === false && sum6 === false && sum7 === false) {
-    e.preventDefault(); // Check if any activity is checked
+     e.preventDefault(); // Check if any activity is checked
+     fieldsets[2].children[0].style.color = "#cc0000";
   }
-  if(name_input.value.length === 0) {alert("You need enter your name!")} // Alert message if name field is blank
-  if(mail.length === 0) {alert("You need enter email!")} // Alert message if email field is blank
-  if(cc_num.value.length < 13 || cc_num.value.length > 16) {alert("Please enter credit card number that is 13-16 digits long.")} // Alert message if card num field have too many or few digits
-
+  if ((payment.value === "select_method" || payment.value === "credit card") && regex_cc.test(cc_num.value) === false) {
+    e.preventDefault()
+    fieldsets[3].children[3].children[0].children[0].style.color = "#cc0000";
+    fieldsets[3].children[3].children[0].children[1].style.borderColor = "#cc0000";
+    alert("Please enter credit card number that is 13-16 digits long.") // Alert message if card num field have too many or few digits
+  }
+  if ((payment.value === "select_method" || payment.value === "credit card") && regex_zip.test(zip.value) === false) {
+    e.preventDefault()
+    fieldsets[3].children[3].children[1].children[0].style.color = "#cc0000";
+    fieldsets[3].children[3].children[1].children[1].style.borderColor = "#cc0000";
+    alert("Please enter ZIP code") // Alert message if card num field have too many or few digits
+  }
+  if ((payment.value === "select_method" || payment.value === "credit card") && regex_cvv.test(cvv.value) === false) {
+    e.preventDefault()
+    fieldsets[3].children[3].children[2].children[0].style.color = "#cc0000";  //CVV label color
+    fieldsets[3].children[3].children[2].children[1].style.borderColor = "#cc0000"; //CVV input border color
+    alert("Please enter CVV number") // Alert message if card num field have too many or few digits
+  }
 }); //end listener
-cc_num.addEventListener("keypress", function() {
-  if(cc_num.value.length < 12 || cc_num.value.length > 15 || regex_cc.test(cc_num.value) === false) {
-    newNode.innerHTML = "Card number should be 13-16 digits long, you typed " + (cc_num.value.length + 1);
-    parentDiv.style.position = "relative";
-    newNode.style.position = "absolute";
-    newNode.style.top = "-30%";
-    newNode.style.left = "0";
-    newNode.style.color = "red";
-    newNode.style.background = "white";
-    newNode.style.display = "block";
-    newNode.style.padding = "5px";
-    parentDiv.insertBefore(newNode, cc_num);
-    parentDiv.insertBefore(newNode, newNode.nextSibling);
-  } else if(cc_num.value.length > 11 && cc_num.value.length < 16){
-      newNode.style.display = "none";
+
+function cc_error_message(parent, referenceNode, cc, span, message, top, bottom) {
+  span.innerHTML = message + referenceNode.value.length;
+  parent.style.position = "relative";
+  span.style.position = "absolute";
+  span.style.top = top;//-5%
+  span.style.bottom = bottom;
+  span.style.left = "0";
+  span.style.color = "#cc0000";
+  span.style.fontSize = "12px";
+  span.style.background = "#85b5ca";
+  span.style.display = "block";
+  span.style.padding = "5px";
+  span.className = cc + "_span";
+  parent.insertBefore(span, referenceNode);
+  referenceNode.style.borderColor = "#cc0000";
+}
+name_input.addEventListener("keyup", function() { //Start NAME input keypress listener
+  if (name_input.value.length > 0) {
+    name_input.style.borderColor = "#00e600";
+    fieldsets[0].children[1].style.color = "#000";
   }
-});
+}); //End NAME input keypress listener
+mail.addEventListener("keyup", function() { //Start EMAIL input keypress listener
+  if(regex_mail.test(mail.value) === false) {
+    cc_error_message(mail.parentNode, mail, "mail", new_cc_span, "Example: dave@teamtreehouse.com", "", "42%");
+    new_cc_span.innerHTML = "Example: dave@teamtreehouse.com";
+  } else {
+      try {
+        document.querySelector(".mail_span").style.display = "none";
+        mail.style.borderColor = "#00e600";
+        fieldsets[0].children[3].style.color = "#000";
+        if(mail.value.length === 0) {  mail.style.borderColor = "";}
+      }
+      catch(err) {
+        console.log("There is no cc_span")
+      }
+  }
+}); //End EMAIL input keypress listener
+cc_num.addEventListener("keyup", function(e) { //Start  CREDIT CARD keypress listener
+  if((cc_num.value.length > 0 && cc_num.value.length < 13) || cc_num.value.length > 16 || regex_cc.test(cc_num.value) === false) {
+    cc_error_message(cc_input, cc_num, "cc", new_cc_span, "Card number should be 13-16 digits long, you typed ", "-5%", "");
+  } else {
+      try {
+        document.querySelector(".cc_span").style.display = "none";
+        cc_num.style.borderColor = "#00e600";
+        cc_input.children[0].style.color = "#000";
+        if(cc_num.value.length === 0) {  cc_num.style.borderColor = "";}
+      }
+      catch(err) {
+        console.log("There is no cc_span")
+      }
+  }
+});//End credit card keypress listener
+zip_input.addEventListener("keyup", function(e) { //Start  zip code keypress listener
+  if((zip.value.length > 0 && zip.value.length < 5) || zip.value.length > 5 || regex_zip.test(zip.value) === false) {
+    cc_error_message(zip_input,zip,"zip",new_zip_span, "Enter 5 digits ", "-5%", "");
+  } else {
+      try {
+        document.querySelector(".zip_span").style.display = "none";
+        zip.style.borderColor = "#00e600";
+        zip_input.children[0].style.color = "#000";
+        if(zip.value.length === 0) {
+          zip.style.borderColor = "";
+          document.querySelector(".zip_span").style.display = "none";
+        }
+      }
+      catch(err) {
+        console.log("There is no cc_span")
+      }
+  }
+}); //End  zip code keypress listener
+cvv_input.addEventListener("keyup", function(e) { //Start  CVV code keypress listener
+  if((cvv.value.length > 0 && cvv.value.length < 3) || cvv.value.length > 3 || regex_cvv.test(cvv.value) === false) {
+    cc_error_message(cvv_input,cvv,"cvv",new_cvv_span, "Enter 3 digits ", "-5%", "");
+  } else {
+      try {
+        document.querySelector(".cvv_span").style.display = "none";
+        cvv.style.borderColor = "#00e600";
+        cvv_input.children[0].style.color = "#000";
+        if(cvv.value.length === 0) {
+          cvv.style.borderColor = "";
+          document.querySelector(".ccv_span").style.display = "none";
+        }
+      }
+      catch(err) {
+        console.log(err)
+      }
+  }
+}); //End  zip code keypress listener
