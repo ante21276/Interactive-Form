@@ -11,6 +11,13 @@ let jobs_selection = document.querySelector("#title");
 let other_textarea = document.querySelector("#other-title"); //Add other-title id to textarea
 other_textarea.placeholder = "Your Job Role";
 other_textarea.style.display = "none";
+title.addEventListener("change", function() {
+   if(jobs_selection.value === "other") {
+     other_textarea.style.display = "block";
+   } else {
+     other_textarea.style.display = "none";
+   }
+ });
 /**********************************
 Change color menu
 ***********************************/
