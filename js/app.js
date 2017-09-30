@@ -24,33 +24,22 @@ Change color menu
 let design_selection = document.querySelector("#design");
 let colors = document.querySelector("#color");
 let color_div = document.querySelector("#colors-js-puns");
-if(colors[0]) {
-  color_div.style.display = "none";
-}
-function colorChange() {
-  for(let i = 0; i < colors.length; i++) {
-    if(colors[0]) {
-      color_div.style.display = "none";
+
+color_div.hidden = true;
+design_selection.addEventListener("change", function() {
+  for(let i = 0; i < colors.length; i++)
+    if(design_selection.value === "js puns") {
+      color_div.hidden = false;
+      if(i > 2){ colors[i].disabled = true;
+      }else {colors[i].disabled = false;}
+    } else if(design_selection.value === "heart js") {
+        color_div.hidden = false;
+        if(i < 3){ colors[i].disabled = true
+        }else{colors[i].disabled = false;}
+    } else {
+        color_div.hidden = true;
     }
-      if(design_selection.value === "js puns") {
-        color_div.style.display = "block";
-        if (i > 2 ) {
-          colors[i].style.display = "none";
-        } else if(i < 3) {
-            colors[i].style.display = "block";
-            colors.value = colors.options[0].value;
-        }
-      } else if (design_selection.value === "heart js") {
-          color_div.style.display = "block";
-          if (i < 3){
-            colors.value = colors.options[3].value;
-           colors[i].style.display = "none";
-         } else if (i >= 3) {
-           colors[i].style.display = "block";
-         }
-    }
-  }
-}
+  });
 /**************************************************
 Checkbox - only one activity which start at the same time can be checked
 ***************************************************/
@@ -137,7 +126,7 @@ payment.addEventListener("change", function() { //start listener
 Form Validation
 *****************/
 let submit = document.querySelector("button");
-let regex_mail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/; //Using regular expresion for mail validation
+let regex_mail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{3}$/; //Using regular expresion for mail validation
 let regex_cc = /\d{12,15}/; //Using regular expresion for cc number validation
 let regex_zip = /\d{5}/;
 let regex_cvv = /\d{3}/;
